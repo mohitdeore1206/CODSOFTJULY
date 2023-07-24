@@ -1,0 +1,65 @@
+
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
+public class task2 {
+    public static void main(String[] args) {
+        // Prompt the user for input type (text or file)
+        System.out.println("Enter 'T' for text input or 'F' for file input:");
+        String inputType = System.console().readLine().trim();
+
+        String inputText;
+        if (inputType.equalsIgnoreCase("T")) {
+            // Prompt the user for text input
+            System.out.println("Enter your text:");
+            inputText = System.console().readLine();
+        } else if (inputType.equalsIgnoreCase("F")) {
+            // Prompt the user for file input
+            System.out.println("Enter the file path:");
+            String filePath = System.console().readLine();
+            try {
+                inputText = readFile(filePath);
+            } catch (IOException e) {
+                System.out.println("Error reading file: " + e.getMessage());
+                return;
+            }
+        } else {
+            System.out.println("Invalid input type. Program exiting.");
+            return;
+        }
+
+        // Split the input string into words using space and punctuation as delimiters
+        String[] words = inputText.split("[\\s\\p{Punct}]+");
+
+        // Initialize a counter variable for the number of words
+        int wordCount = 0;
+
+        // Set of common words or stop words to ignore (optional, can be customized)
+        Set<String> stopWords = new HashSet<>(Arrays.asList("the", "and", "or", "a", "an"));
+
+        // Iterate through the array of words and increment the counter for each word encountered
+        for (String word : words) {
+            if (!stopWords.contains(word.toLowerCase())) {
+                wordCount++;
+            }
+        }
+
+        // Display the total count of words to the user
+        System.out.println("Total number of words: " + wordCount);
+    }
+
+    private static String readFile(String filePath) throws IOException {
+        StringBuilder content = new StringBuilder();
+        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                content.append(line).append("\n");
+            }
+        }
+        return content.toString();
+    }
+}
